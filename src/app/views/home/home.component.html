@@ -1,0 +1,98 @@
+<div
+  class="d-flex justify-content-center align-items-center"
+  style="width: 100%; height: 68vh"
+>
+  <form
+    class="bg-secondary d-flex flex-column justify-content-start align-items-center"
+    style="width: 90%; height: 90%"
+  >
+    <div
+      class="d-flex flex-column justify-content-center align-items-center"
+      style="width: 100%; height: 20%"
+    >
+      <h2>Progreso del Formulario</h2>
+      <ngb-progressbar
+        class="my-3"
+        style="width: 80%; height: 50%"
+        type="success"
+        [value]="(formState / 2) * 100"
+        [striped]="true"
+        [showValue]="true"
+        [animated]="true"
+      />
+    </div>
+
+    <div class="position-relative" style="width: 100%; height: 70%">
+      <div
+        class="position-absolute top-0 px-4 {{
+          formState == 0 ? '' : 'd-none'
+        }}"
+      >
+        <h3>Pantalla 1</h3>
+        <div class="form-group">
+          <label for="country"
+            >Seleccione alguno de los siguientes paises:</label
+          >
+          <select
+            name="country"
+            id="country"
+            style="width: 80%; transform: translateX(12.5%)"
+            [value]="selectedCountry"
+            (change)="setSelectedContry($event)"
+          >
+            @for (country of countries; track country) {
+            <option value="{{ country }}">{{ country }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="city"
+            >Seleccione alguna de las ciudades de ese pais:</label
+          >
+          <select
+            name="city"
+            id="city"
+            style="width: 80%; transform: translateX(12.5%)"
+            (change)="setSelectedCity($event)"
+          >
+          @for (city of cities; track city) {
+            <option value="{{ city }}">{{ city }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      
+      <!-- Pantalla 2 -->
+      <div
+        class="position-absolute top-0 d-flex flex-column px-4 {{ formState == 1 ? '' : 'd-none' }}"
+        style="width: 100%; height: 70%"
+      >
+        <h3 class="mb-4">Pantalla 2</h3>
+        <label for="cash">Digite el presupuesto</label>
+        <input type="number" name="cash" id="cash" (change)="setSelectedCash($event)">
+      </div>
+      
+      <!-- Pantalla 3 -->
+      <div
+        class="position-absolute top-0 px-4 {{ formState == 2 ? '' : 'd-none' }}"
+        style="width: 100%; height: 70%"
+      >
+        <h3>pantalla 3</h3>
+        <p>{{selectedCountry}}</p>
+        <p>{{selectedCity}}</p>
+        <p>{{selectedCash}}</p>
+      </div>
+      
+    </div>
+    
+    <div
+      class="d-flex justify-content-center align-items-center gap-3"
+      style="width: 100%; height: 10%"
+    >
+      <button type="button"  [attr.disabled]="formState === 0 ? true : null" (click)="previusForm()">Atras</button
+      ><button type="button" [attr.disabled]="formState === 2 ? true : null" (click)="nextForm()">Siguiente</button
+      ><button type="button" (click)="validateForm()">Consultar</button>
+    </div>
+  </form>
+</div>
