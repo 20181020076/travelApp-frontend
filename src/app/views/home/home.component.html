@@ -78,10 +78,13 @@
         class="position-absolute top-0 px-4 {{ formState == 2 ? '' : 'd-none' }}"
         style="width: 100%; height: 70%"
       >
-        <h3>pantalla 3</h3>
-        <p>{{selectedCountry}}</p>
-        <p>{{selectedCity}}</p>
-        <p>{{selectedCash}}</p>
+        <h3>Pantalla 3</h3>
+        <p>pais seleccionado: {{selectedCountry}}</p>
+        <p>ciudad seleccionada: {{selectedCity}}</p>
+        <p>Presupuesto: {{ selectedCash | currency:'COP':'symbol' }}</p>
+        <p>presupuesto en moneda local: {{currencyConverted}}</p>
+        <p></p>
+
       </div>
       
     </div>
@@ -91,8 +94,8 @@
       style="width: 100%; height: 10%"
     >
       <button type="button"  [attr.disabled]="formState === 0 ? true : null" (click)="previusForm()">Atras</button
-      ><button type="button" [attr.disabled]="formState === 2 ? true : null" (click)="nextForm()">Siguiente</button
-      ><button type="button" (click)="validateForm()">Consultar</button>
+      ><button type="button" [attr.disabled]="formState === 1 ? true : null" (click)="formState!=2? nextForm():clearForm()">{{formState==2?"volver a empezar":"Siguiente"}}</button
+      ><button type="button" [attr.disabled]="formState === 1 ? null : true" (click)="validateForm()">Consultar</button>
     </div>
   </form>
 </div>
