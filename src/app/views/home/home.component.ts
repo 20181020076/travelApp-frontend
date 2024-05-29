@@ -4,50 +4,40 @@ import { ExchangeService } from '../../services/exchange.service';
 import { WeatherService } from '../../services/weather.service';
 import { CommonModule } from '@angular/common';
 import { CountriesService } from '../../services/countries.service';
+import { City, Country } from '../../models/models';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NgbProgressbar,CommonModule],
+  imports: [NgbProgressbar, CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent implements OnInit{
-  countries: any[] = [];
-  cities: any[] = [];
+export class HomeComponent implements OnInit {
+  countries: Country[] = [];
+  cities: City[] = [];
   formState: number = 0;
-  selectedCountry: any = 1;
-  selectedCity: any = this.cities[0];
+  selectedCountry: Country | null = null;
+  selectedCity: City | null = null;
   selectedCash: number = 0;
   currencyConverted: number = 0;
-  weather:number = 0;
+  weather: number = 0;
   constructor(
     private ExchangeService: ExchangeService,
     private WeatherService: WeatherService,
     private CountriesService: CountriesService
-  ) {}
+  ) { }
   ngOnInit(): void {
-      this.CountriesService.getCountries().subscribe({
-        next: async(x) => {
-          await x.map((country:any,index:number)=>{
-
-            for(let city of country.cities){
-              
-
-              this.cities.push(city)
-           
-            }
-            
-            return this.countries.push(country)
-          });
-          
-
-          
-          // this.countries=x.
-        },
-        error: (er) => console.error(er),
-        complete: () => console.info('complete')
-      });
+    this.CountriesService.getCountries().subscribe({
+      next: async (x) => {
+        this.countries = x;
+        this.selectedCountry = this.countries[0];
+        this.cities = this.getCitiesByCountry(this.selectedCountry.id);
+        this.selectedCity = this.cities[0];
+      },
+      error: (er) => console.error(er),
+      complete: () => console.info('complete')
+    });
   }
 
   nextForm() {
@@ -82,7 +72,7 @@ export class HomeComponent implements OnInit{
     //       complete: () => console.info('complete'),
     //     });
 
-        
+
     //   },
     //   error: (e) => console.error(e),
     //   complete: () => console.info('complete'),
@@ -112,27 +102,27 @@ export class HomeComponent implements OnInit{
   }
   setSelectedContry(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    console.log(selectElement.value)
-    for(let city of this.cities){
-      if(city.id === selectElement.value){
-        this.selectedCity=city
-        console.log(city,"hola")
-
-      }
+    console.log("\n Country selected: \n", selectElement.value)
+    const country = this.countries.find((c: any) => c.id == selectElement.value);
+    if (!country) {
+      console.error("Country not found.");
+      return;
     }
 
-    console.log(selectElement.value)
-    this.selectedCountry = selectElement.value;
-
-
+    this.selectedCountry = country;
+    this.cities = this.getCitiesByCountry(this.selectedCountry.id);
+    this.selectedCity = this.cities[0];
+    console.log("\n cities:\n", this.cities);
   }
-  getCountryNamebyId(id:Number){
-    const validation = this.countries.find(country => country.id === id)
+
+  getCountryNamebyId(id: Number) {
+    const validation = this.countries.find((country: any) => country.id === id)
     return validation?.name
   }
   setSelectedCity(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    this.selectedCity = selectElement.value;
+    const cityId = parseInt(selectElement.value);
+    this.selectedCity = this.cities.find(c => c.id === cityId) ?? null;
   }
   setSelectedCash(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
@@ -144,5 +134,9 @@ export class HomeComponent implements OnInit{
       event.preventDefault();
       this.validateForm();
     }
+  }
+
+  getCitiesByCountry(countryId: number): City[] {
+    return this.countries.find((country: any) => country.id === countryId)?.cities ?? [];
   }
 }

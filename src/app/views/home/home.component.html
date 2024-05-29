@@ -67,7 +67,6 @@
               name="country"
               id="country"
               style="width: 100%"
-              
               (change)="setSelectedContry($event)"
             >
               @for (country of countries; track country) {
@@ -91,13 +90,7 @@
               (change)="setSelectedCity($event)"
             >
               @for (city of cities; track city.id) {
-
-                
-                @if(city.country_id==selectedCountry){
-                  <option value="{{ city.name }}" i18n>{{ city.name }}</option>
-
-                }
-                
+              <option value="{{ city.id }}" i18n>{{ city.name }}</option>
               }
             </select>
           </div>
@@ -129,10 +122,12 @@
         }}"
         style="width: 100%; height: 70%"
       >
-        <div style="width: 50%;height: 100%;">
+        <div style="width: 50%; height: 100%">
           <h3 i18n>Pantalla 3</h3>
-          <p i18n>pais: {{ getCountryNamebyId(selectedCountry) }}</p>
-          <p i18n>ciudad: {{ selectedCity }}</p>
+          <p *ngIf="selectedCountry" i18n>
+            pais: {{ getCountryNamebyId(selectedCountry.id) }}
+          </p>
+          <p *ngIf="selectedCity" i18n>ciudad: {{ selectedCity.name }}</p>
           <p i18n>
             Presupuesto: <br />
             {{ selectedCash | currency : "COP" : "symbol" }} ->
@@ -140,8 +135,8 @@
           </p>
           <p></p>
         </div>
-        <div class="" style="width: 50%;height: 100%;">
-          {{weather}}
+        <div class="" style="width: 50%; height: 100%">
+          {{ weather }}
         </div>
       </div>
     </div>
