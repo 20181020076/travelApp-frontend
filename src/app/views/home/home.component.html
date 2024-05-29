@@ -71,7 +71,7 @@
             >
               @for (country of countries; track country) {
 
-              <option value="{{ country.id }}" i18n>{{ country.name }}</option>
+              <option value="{{ country.id }}" i18n>{{ capitalize(country.name) }}</option>
               }
             </select>
           </div>
@@ -90,7 +90,7 @@
               (change)="setSelectedCity($event)"
             >
               @for (city of cities; track city.id) {
-              <option value="{{ city.id }}" i18n>{{ city.name }}</option>
+              <option value="{{ city.id }}" i18n>{{ capitalize(city.name) }}</option>
               }
             </select>
           </div>
@@ -117,26 +117,28 @@
 
       <!-- Pantalla 3 -->
       <div
-        class="position-absolute top-0 d-flex {{
+        class="position-absolute top-0 d-flex p-3 {{
           formState == 2 ? '' : 'd-none'
         }}"
         style="width: 100%; height: 70%"
       >
         <div style="width: 50%; height: 100%">
-          <h3 i18n>Pantalla 3</h3>
-          <p *ngIf="selectedCountry" i18n>
-            pais: {{ getCountryNamebyId(selectedCountry.id) }}
+          <h3 i18n class="fw-bold">Pantalla 3</h3>
+          <p *ngIf="selectedCountry" i18n class="fw-bold">
+            Pais: <span class="fw-normal">{{ capitalize(getCountryNamebyId(selectedCountry.id)) }}</span>
           </p>
-          <p *ngIf="selectedCity" i18n>ciudad: {{ selectedCity.name }}</p>
-          <p i18n>
-            Presupuesto: <br />
-            {{ selectedCash | currency : "COP" : "symbol" }} ->
-            {{ currencyConverted }}
+          <p *ngIf="selectedCity" i18n class="fw-bold">Ciudad: <span class="fw-normal">{{ capitalize(selectedCity.name) }}</span></p>
+          <p i18n >
+            <span class="fw-bold">Presupuesto:</span><br />
+            {{ selectedCash | currency : "COP" : "symbol" }} <br>
+            
+            {{ selectedCountry&&(currencyConverted| currency : this.selectedCountry.currency_code : "symbol" ) }}
           </p>
           <p></p>
         </div>
         <div class="" style="width: 50%; height: 100%">
-          {{ weather }}
+          <span class="fw-bold">Temperatura:</span> <br> {{ weather?.temp }} °c 
+          <img src="https://openweathermap.org/img/wn/{{weather?.icon}}.png" width="50" height="50" alt="ico weather">
         </div>
       </div>
     </div>
@@ -175,7 +177,7 @@
             type="button"
             class="btn btn-success custom-btn"
             style="z-index: 50"
-            [attr.disabled]="formState === 1 ? null : true"
+            [attr.disabled]="formState === 1 && selectedCash!==null ? null : true"
             (click)="validateForm()"
             i18n
           >

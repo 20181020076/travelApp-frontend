@@ -4,7 +4,7 @@ import { ExchangeService } from '../../services/exchange.service';
 import { WeatherService } from '../../services/weather.service';
 import { CommonModule } from '@angular/common';
 import { CountriesService } from '../../services/countries.service';
-import { City, Country } from '../../models/models';
+import { City, Country, Weather } from '../../models/models';
 
 @Component({
   selector: 'app-home',
@@ -19,9 +19,9 @@ export class HomeComponent implements OnInit {
   formState: number = 0;
   selectedCountry: Country | null = null;
   selectedCity: City | null = null;
-  selectedCash: number = 0;
+  selectedCash: number | null = null;
   currencyConverted: number = 0;
-  weather: number = 0;
+  weather: Weather | null = null;
   constructor(
     private ExchangeService: ExchangeService,
     private WeatherService: WeatherService,
@@ -58,35 +58,51 @@ export class HomeComponent implements OnInit {
     this.formState++;
 
     // metodo que extrae las coordenadas de una ciudad y luego consluta el clima de esas coordenadas
-    // this.WeatherService.getLocation({ city: 'hd', country: '' }).subscribe({
-    //   next: (v) => {
-    //     const lat = v[0].lat;
-    //     const lon = v[0].lon;
+    if(!this.selectedCity){
 
-    //      this.WeatherService.getWeather({lat,lon}).subscribe({
-    //       next: (x) => {
-    //         console.log(x.main.temp)
-    //         this.weather=x.main.temp
-    //       },
-    //       error: (er) => console.error(er),
-    //       complete: () => console.info('complete'),
-    //     });
+    }else{
+      this.WeatherService.getLocation({ city:this.selectedCity.name, country: '' }).subscribe({
+        next: (v) => {
+          const lat = v[0].lat;
+          const lon = v[0].lon;
+  
+           this.WeatherService.getWeather({lat,lon}).subscribe({
+            next: (x) => {
+              console.log(x.weather[0].icon);
+              if(x){
+                this.weather={id:x.id, temp:Math.round(x.main.temp - 273.15),icon:x.weather[0].icon};
+              }
+            },
+            error: (er) => console.error(er),
+            complete: () => console.info('complete'),
+          });
+  
+  
+        },
+        error: (e) => console.error(e),
+        complete: () => console.info('complete'),
+      });
+    }
+      
 
-
-    //   },
-    //   error: (e) => console.error(e),
-    //   complete: () => console.info('complete'),
-    // });
+    
+    
 
     // metodo que conviete la moneda de cop a moneda local (descomentar)
+      if(!this.selectedCountry){
 
-    // this.ExchangeService.convert().subscribe({
-    //   next: (v) => {
-    //     this.currencyConverted = v.conversion_rate*this.selectedCash;
-    //   },
-    //   error: (e) => console.error(e),
-    //   complete: () => console.info('complete'),
-    // });
+      }else{
+        this.ExchangeService.convert(this.selectedCountry.currency_code).subscribe({
+      next: (v) => {
+        if(this.selectedCash){
+          this.currencyConverted = v.conversion_rate*this.selectedCash;
+        }
+      },
+      error: (e) => console.error(e),
+      complete: () => console.info('complete'),
+    });
+      }
+    
 
     const objectData = {
       country: this.selectedCountry,
@@ -126,7 +142,7 @@ export class HomeComponent implements OnInit {
   }
   setSelectedCash(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    this.selectedCash = parseInt(selectElement.value);
+    this.selectedCash = Math.round(parseInt(selectElement.value));
   }
 
   preventFormSubmit(event: KeyboardEvent): void {
@@ -138,5 +154,11 @@ export class HomeComponent implements OnInit {
 
   getCitiesByCountry(countryId: number): City[] {
     return this.countries.find((country: any) => country.id === countryId)?.cities ?? [];
+  }
+  capitalize(str:string|undefined) {
+    if (typeof str !== 'string' || str.length === 0) {
+      return str;
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
 }

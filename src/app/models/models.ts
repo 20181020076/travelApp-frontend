@@ -15,3 +15,9 @@ export interface City {
   created_at: string;
   updated_at: string;
 }
+export interface Weather {
+  id:number;
+  temp: number;
+  icon: string;
+
+}

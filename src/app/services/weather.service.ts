@@ -8,12 +8,12 @@ import { Observable } from 'rxjs';
 })
 export class WeatherService {
   private API_KEY = "3991fe3bda6e6e974aaa80a57e75da76"
-  private API_LOCATION = "http://api.openweathermap.org/geo/1.0/direct?q=bogota&limit=1&appid=3991fe3bda6e6e974aaa80a57e75da76"
   constructor(private http:HttpClient) { }
   
-  public getLocation({city,country}:{city:string,country:string}):Observable<any>{
-    return this.http.get<any>(this.API_LOCATION)
-    
+  public getLocation({city,country}:{city:string|null,country:string}):Observable<any>{
+      const API_LOCATION = `http://api.openweathermap.org/geo/1.0/direct?q=${city?city:"Bogota"}&limit=1&appid=3991fe3bda6e6e974aaa80a57e75da76`
+      return this.http.get<any>(API_LOCATION)
+
   }
   public getWeather ({lat,lon}:{lat:number,lon:number}):Observable<any>{
     
