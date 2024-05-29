@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './views/home/home.component';
-import { RecordComponent } from './views/record/record.component';
+import { HistoryComponent } from './views/history/history.component';
 
 export const routes: Routes = [
     {path:"",component:HomeComponent},
-    {path:"historial",component:RecordComponent},
+    {path:"historial",component:HistoryComponent},
 
 ];

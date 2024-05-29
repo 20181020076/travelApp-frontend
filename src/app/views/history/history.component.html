@@ -1,0 +1,29 @@
+<div
+  class="d-flex container justify-content-center align-items-center bg-white overflow-x-scroll position-relative"
+  style="width: 100%; height: 68vh"
+>
+  <table class="table table-striped position-absolute top-0 start-0">
+    <thead>
+      <tr>
+        <th scope="col">country_id</th>
+        <th scope="col">weather</th>
+        <th scope="col">city_id</th>
+        <th scope="col">currency_cop</th>
+        <th scope="col">currency_converted</th>
+        <th scope="col">weather_icon</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(register of history; track register.id){
+      <tr>
+        <th scope="row">1</th>
+        <td>Mark</td>
+        <td>Otto</td>
+        <td>mdo</td>
+        <td>mdo</td>
+        <td>mdo</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

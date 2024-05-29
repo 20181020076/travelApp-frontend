@@ -1,101 +1,187 @@
 <div
-  class="d-flex justify-content-center align-items-center"
+  class="d-flex justify-content-center align-items-center bg-white"
   style="width: 100%; height: 68vh"
 >
   <form
-    class="bg-secondary d-flex flex-column justify-content-start align-items-center"
+    class="overflow-hidden border border-black rounded-2 d-flex flex-column justify-content-start align-items-center position-relative"
     style="width: 90%; height: 90%"
   >
+    <div
+      class="position-absolute {{
+        formState == 0
+          ? 'top-0 end-0'
+          : formState == 1
+          ? 'bottom-0'
+          : 'bottom-0 end-0'
+      }}"
+    >
+      <img
+        src=" {{
+          formState == 0
+            ? '/assets/images/hoja.png'
+            : formState == 1
+            ? '/assets/images/montañas.png'
+            : '/assets/images/redCircle.png'
+        }}"
+        alt=""
+        [style]="{ 'transform': formState == 0 ? 'rotate(230deg)' : '', 'z-index': 0 , 'width': formState != 1 ? '200px' : '100%',}"
+        class=""
+      />
+    </div>
     <div
       class="d-flex flex-column justify-content-center align-items-center"
       style="width: 100%; height: 20%"
     >
-      <h2>Progreso del Formulario</h2>
+      <span class="mt-2 fw-bold" i18n>Progreso del Formulario</span>
+
       <ngb-progressbar
-        class="my-3"
-        style="width: 80%; height: 50%"
-        type="success"
+        class="mb-2 z-50"
+        style="width: 80%; height: 30%"
+        [type]="(formState / 2) * 100 !== 100 ? 'warning' : 'success'"
         [value]="(formState / 2) * 100"
         [striped]="true"
         [showValue]="true"
         [animated]="true"
-      />
+      >
+      </ngb-progressbar>
     </div>
 
     <div class="position-relative" style="width: 100%; height: 70%">
+      <!-- Pantalla 1 -->
       <div
+        style="z-index: 50"
         class="position-absolute top-0 px-4 {{
           formState == 0 ? '' : 'd-none'
         }}"
       >
-        <h3>Pantalla 1</h3>
-        <div class="form-group">
-          <label for="country"
-            >Seleccione alguno de los siguientes paises:</label
+        <h1 class="mb-2" i18n>Pantalla 1</h1>
+        <div class="d-flex flex-column gap-1">
+          <div
+            class="form-group rounded-4 p-3"
+            style="background-color: rgba(128, 128, 128, 0.5)"
           >
-          <select
-            name="country"
-            id="country"
-            style="width: 80%; transform: translateX(12.5%)"
-            [value]="selectedCountry"
-            (change)="setSelectedContry($event)"
-          >
-            @for (country of countries; track country) {
-            <option value="{{ country }}">{{ country }}</option>
-            }
-          </select>
-        </div>
+            <label for="country" style="z-index: 50" i18n
+              >Seleccione alguno de los siguientes paises:</label
+            >
+            <select
+              name="country"
+              id="country"
+              style="width: 100%"
+              [value]="selectedCountry"
+              (change)="setSelectedContry($event)"
+            >
+              @for (country of countries; track country) {
+              <option value="{{ country }}" i18n>{{ country }}</option>
+              }
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="city"
-            >Seleccione alguna de las ciudades de ese pais:</label
+          <div
+            class="form-group rounded-4 p-3"
+            style="background-color: rgba(128, 128, 128, 0.5)"
           >
-          <select
-            name="city"
-            id="city"
-            style="width: 80%; transform: translateX(12.5%)"
-            (change)="setSelectedCity($event)"
-          >
-          @for (city of cities; track city) {
-            <option value="{{ city }}">{{ city }}</option>
-            }
-          </select>
+            <label for="city" class="fw-semibold" i18n
+              >Seleccione alguna de las ciudades de ese pais:</label
+            >
+            <select
+              name="city"
+              id="city"
+              style="width: 100%"
+              (change)="setSelectedCity($event)"
+            >
+              @for (city of cities; track city) {
+              <option value="{{ city }}" i18n>{{ city }}</option>
+              }
+            </select>
+          </div>
         </div>
       </div>
-      
+
       <!-- Pantalla 2 -->
       <div
-        class="position-absolute top-0 d-flex flex-column px-4 {{ formState == 1 ? '' : 'd-none' }}"
+        class="position-absolute top-0 d-flex flex-column px-4 {{
+          formState == 1 ? '' : 'd-none'
+        }}"
         style="width: 100%; height: 70%"
       >
-        <h3 class="mb-4">Pantalla 2</h3>
-        <label for="cash">Digite el presupuesto</label>
-        <input type="number" name="cash" id="cash" (change)="setSelectedCash($event)">
+        <h3 class="mb-4" i18n>Pantalla 2</h3>
+        <label for="cash" i18n>Digite el presupuesto</label>
+        <input
+          type="number"
+          name="cash"
+          id="cash"
+          (keydown)="preventFormSubmit($event)"
+          (change)="setSelectedCash($event)"
+        />
       </div>
-      
+
       <!-- Pantalla 3 -->
       <div
-        class="position-absolute top-0 px-4 {{ formState == 2 ? '' : 'd-none' }}"
+        class="position-absolute top-0 d-flex {{
+          formState == 2 ? '' : 'd-none'
+        }}"
         style="width: 100%; height: 70%"
       >
-        <h3>Pantalla 3</h3>
-        <p>pais seleccionado: {{selectedCountry}}</p>
-        <p>ciudad seleccionada: {{selectedCity}}</p>
-        <p>Presupuesto: {{ selectedCash | currency:'COP':'symbol' }}</p>
-        <p>presupuesto en moneda local: {{currencyConverted}}</p>
-        <p></p>
-
+        <div style="width: 50%;height: 100%;">
+          <h3 i18n>Pantalla 3</h3>
+          <p i18n>pais: {{ selectedCountry }}</p>
+          <p i18n>ciudad: {{ selectedCity }}</p>
+          <p i18n>
+            Presupuesto: <br />
+            {{ selectedCash | currency : "COP" : "symbol" }} ->
+            {{ currencyConverted }}
+          </p>
+          <p></p>
+        </div>
+        <div class="" style="width: 50%;height: 100%;">
+          {{weather}}
+        </div>
       </div>
-      
     </div>
-    
+
     <div
       class="d-flex justify-content-center align-items-center gap-3"
-      style="width: 100%; height: 10%"
+      style="width: 100%; height: 10%; z-index: 50"
     >
-      <button type="button"  [attr.disabled]="formState === 0 ? true : null" (click)="previusForm()">Atras</button
-      ><button type="button" [attr.disabled]="formState === 1 ? true : null" (click)="formState!=2? nextForm():clearForm()">{{formState==2?"volver a empezar":"Siguiente"}}</button
-      ><button type="button" [attr.disabled]="formState === 1 ? null : true" (click)="validateForm()">Consultar</button>
+      <div class="row">
+        <div class="col">
+          <button
+            type="button"
+            style="z-index: 50"
+            class="btn btn-outline-danger"
+            [attr.disabled]="formState === 0 ? true : null"
+            (click)="previusForm()"
+            i18n
+          >
+            Atras
+          </button>
+        </div>
+        <div class="col">
+          <button
+            type="button"
+            style="z-index: 50"
+            class="btn btn-primary custom-btn"
+            [attr.disabled]="formState === 1 ? true : null"
+            (click)="formState != 2 ? nextForm() : clearForm()"
+            i18n
+          >
+            {{ formState == 2 ? "Reiniciar" : "Siguiente" }}
+          </button>
+        </div>
+        <div class="col">
+          <button
+            type="button"
+            class="btn btn-success custom-btn"
+            style="z-index: 50"
+            [attr.disabled]="formState === 1 ? null : true"
+            (click)="validateForm()"
+            i18n
+          >
+            Consultar
+          </button>
+          >
+        </div>
+      </div>
     </div>
   </form>
 </div>

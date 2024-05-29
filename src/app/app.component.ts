@@ -13,4 +13,10 @@ import { FooterComponent } from './components/footer/footer.component';
 })
 export class AppComponent {
   title = 'travelApp';
+  static isDarkTheme = false;
+
+  static handleDarkTheme() {
+    AppComponent.isDarkTheme = !AppComponent.isDarkTheme;
+    console.log(this.isDarkTheme)
+  }
 }

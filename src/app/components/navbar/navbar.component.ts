@@ -2,16 +2,22 @@ import { Component, inject, TemplateRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { NgbDatepickerModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { AppComponent } from '../../app.component';
 
 @Component({
 	selector: 'ngbd-offcanvas-basic',
 	standalone: true,
 	imports: [NgbDatepickerModule, RouterLink],
 	templateUrl: './navbar.component.html',
+	styleUrl: './navbar.component.css'
 })
 export class NgbdOffcanvasBasic {
 	private offcanvasService = inject(NgbOffcanvas);
 	closeResult = '';
+	isDarkTheme = AppComponent.isDarkTheme
+	handleDarkTheme () {
+		AppComponent.handleDarkTheme()	
+	} 
 
 	open(content: TemplateRef<any>) {
 		this.offcanvasService.open(content, { ariaLabelledBy: 'offcanvas-basic-title' }).result.then(
