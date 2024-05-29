@@ -67,11 +67,12 @@
               name="country"
               id="country"
               style="width: 100%"
-              [value]="selectedCountry"
+              
               (change)="setSelectedContry($event)"
             >
               @for (country of countries; track country) {
-              <option value="{{ country }}" i18n>{{ country }}</option>
+
+              <option value="{{ country.id }}" i18n>{{ country.name }}</option>
               }
             </select>
           </div>
@@ -89,8 +90,14 @@
               style="width: 100%"
               (change)="setSelectedCity($event)"
             >
-              @for (city of cities; track city) {
-              <option value="{{ city }}" i18n>{{ city }}</option>
+              @for (city of cities; track city.id) {
+
+                
+                @if(city.country_id==selectedCountry){
+                  <option value="{{ city.name }}" i18n>{{ city.name }}</option>
+
+                }
+                
               }
             </select>
           </div>
@@ -124,7 +131,7 @@
       >
         <div style="width: 50%;height: 100%;">
           <h3 i18n>Pantalla 3</h3>
-          <p i18n>pais: {{ selectedCountry }}</p>
+          <p i18n>pais: {{ getCountryNamebyId(selectedCountry) }}</p>
           <p i18n>ciudad: {{ selectedCity }}</p>
           <p i18n>
             Presupuesto: <br />
