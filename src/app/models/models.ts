@@ -16,8 +16,16 @@ export interface City {
   updated_at: string;
 }
 export interface Weather {
-  id:number;
+  id: number;
   temp: number;
   icon: string;
-
+}
+export interface History {
+  id?: string;
+  weather: number;
+  weather_icon: string;
+  currency_cop: number;
+  converted_currency: number;
+  country_id: number;
+  city_id: number;
 }

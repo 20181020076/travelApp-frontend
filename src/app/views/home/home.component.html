@@ -24,7 +24,7 @@
             : '/assets/images/redCircle.png'
         }}"
         alt=""
-        [style]="{ 'transform': formState == 0 ? 'rotate(230deg)' : '', 'z-index': 0 , 'width': formState != 1 ? '200px' : '100%',}"
+        [style]="{ 'transform': formState == 0 ? 'rotate(230deg)' : '', 'z-index': 0 , 'width': formState != 1 ? '200px' : '100%', 'max-width':'600px'}"
         class=""
       />
     </div>
@@ -110,8 +110,9 @@
           type="number"
           name="cash"
           id="cash"
-          (keydown)="preventFormSubmit($event)"
+          style="max-width: 200px;"
           (change)="setSelectedCash($event)"
+          (keydown)="preventFormSubmit($event)"
         />
       </div>
 
@@ -177,7 +178,7 @@
             type="button"
             class="btn btn-success custom-btn"
             style="z-index: 50"
-            [attr.disabled]="formState === 1 && selectedCash!==null ? null : true"
+            [attr.disabled]="formState === 1 && selectedCash  ? null : true"
             (click)="validateForm()"
             i18n
           >

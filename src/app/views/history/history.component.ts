@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HistoryService } from '../../services/history.service';
+import { History } from '../../models/models';
+
 
 @Component({
   selector: 'app-history',
@@ -7,52 +10,32 @@ import { Component } from '@angular/core';
   templateUrl: './history.component.html',
   styleUrl: './history.component.css',
 })
-export class HistoryComponent {
-  history = [
-    {
-      id:1,
-      country_id: 1,
-      weather: 280,
-      city_id: 1,
-      currency_cop: 500,
-      currency_converted: 500,
-      weather_icon: 'dfx',
-    },
-    {
-      id:2,
-      country_id: 2,
-      weather: 230,
-      city_id: 1,
-      currency_cop: 200,
-      currency_converted: 200,
-      weather_icon: 'dfx',
-    },
-    {
-      id:3,
-      country_id: 3,
-      weather: 280,
-      city_id: 1,
-      currency_cop: 500,
-      currency_converted: 500,
-      weather_icon: 'dfx',
-    },
-    {
-      id:4,
-      country_id: 4,
-      weather: 280,
-      city_id: 1,
-      currency_cop: 500,
-      currency_converted: 500,
-      weather_icon: 'dfx',
-    },
-    {
-      id:5,
-      country_id: 5,
-      weather: 280,
-      city_id: 1,
-      currency_cop: 500,
-      currency_converted: 500,
-      weather_icon: 'dfx',
-    },
-  ];
+export class HistoryComponent implements OnInit{
+  constructor(private HistoryService: HistoryService){
+     
+  }
+  ngOnInit(): void {
+    this.HistoryService.getHistories().subscribe({
+      next: async (x) => {
+        x.map(r=>{
+          const modelR:History = {
+            id:r.id,
+            weather:r.weather,
+            weather_icon:r.weather_icon, 
+            currency_cop:r.currency_cop, 
+            converted_currency:r.converted_currency,
+            country_id:r.country_id, 
+            city_id:r.city_id
+          }
+          
+          return this.history.push(modelR)
+        })
+        
+      },
+      error: (er) => console.error(er),
+      complete: () => console.info('complete')
+    });
+      
+  }
+  history : History[] = [];
 }
